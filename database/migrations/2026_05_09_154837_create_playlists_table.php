@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('playlists', function (Blueprint $table) {
-            $table->id('playlist_id'); 
-            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade'); 
-            $table->string('nama_playlist'); 
+            $table->id('playlist_id');
+            // PERBAIKAN: Tambahkan parameter kedua 'user_id'
+            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
+            $table->string('nama_playlist');
             $table->text('deskripsi')->nullable();
-            $table->timestamp('waktu_dibuat')->useCurrent(); 
+            $table->timestamps();
         });
     }
 

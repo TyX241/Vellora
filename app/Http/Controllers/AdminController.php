@@ -4,31 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Media;
 use App\Models\Genre;
+use App\Models\Actor;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        // Menangkap input pencarian
-        $search = $request->input('search');
-        $genreSearch = $request->input('genre_search');
+        try {
+            // 1. Ambil keyword dari request (sesuaikan dengan name di HTML)
+            $search = $request->input('search');          // Untuk Media
+            $genreSearch = $request->input('search_genre'); // SESUAIKAN DENGAN HTML
+            $actorSearch = $request->input('actor_search'); // Untuk Aktor
 
-        // Query untuk Media
-        $mediaQuery = Media::latest();
-        if ($search) {
-            $mediaQuery->where('judul', 'like', '%' . $search . '%');
-        }
-        $allMedia = $mediaQuery->get();
+            // 2. Query Media
+            $mediaQuery = Media::latest();
+            if ($search) {
+                $mediaQuery->where('judul', 'like', '%' . $search . '%');
+            }
+            $allMedia = $mediaQuery->get();
 
-        // Query untuk Genre
-        $genreQuery = Genre::query();
-        if ($genreSearch) {
-            $genreQuery->where('nama_genre', 'like', '%' . $genreSearch . '%');
+            // 3. Query Genre
+            $genreQuery = Genre::query();
+            if ($genreSearch) {
+                $genreQuery->where('nama_genre', 'like', '%' . $genreSearch . '%');
+            }
+            $genres = $genreQuery->orderBy('nama_genre', 'asc')->get();
+
+            // 4. Query Aktor
+            $actorQuery = Actor::query();
+            if ($actorSearch) {
+                $actorQuery->where('nama_aktor', 'like', '%' . $actorSearch . '%');
+            }
+            $actors = $actorQuery->orderBy('nama_aktor', 'asc')->get();
+
+            // 5. Return View
+            $genres_all = Genre::orderBy('nama_genre', 'asc')->get();
+            $actors_all = Actor::orderBy('nama_aktor', 'asc')->get();
+
+            return view('admin.panel', compact(
+                'genres', 'allMedia', 'actors', 
+                'search', 'genreSearch', 'actorSearch',
+                'genres_all', 'actors_all' // Kirim data lengkapnya
+            ));
+
+        } catch (\Exception $e) {
+            dd($e->getMessage()); 
         }
-        $genres = $genreQuery->orderBy('nama_genre', 'asc')->get();
-        
-        return view('admin.panel', compact('genres', 'allMedia', 'search', 'genreSearch'));
     }
 
     public function storeGenre(Request $request)
@@ -50,14 +72,16 @@ class AdminController extends Controller
         ]);
 
         // Simpan data media
-        $media = Media::create($request->except('genres'));
+        $media = Media::create($request->all());
 
-        // Jika ada genre yang dipilih, simpan ke tabel pivot (media_genres)
-        if ($request->has('genres')) {
-            $media->genres()->sync($request->genres);
+        if($request->has('genres')) {
+            $media->genres()->attach($request->genres);
         }
-
-        return back()->with('success', 'Media tayangan berhasil ditambahkan!');
+        // Tambahkan ini:
+        if($request->has('actors')) {
+            $media->actors()->attach($request->actors);
+        }
+        return redirect()->back()->with('success', 'Media tayangan berhasil ditambahkan!');
     }
 
     public function destroyMedia($id)
@@ -80,8 +104,9 @@ class AdminController extends Controller
     {
         $media = Media::with('genres')->findOrFail($id);
         $genres = Genre::all();
-        
-        return view('admin.edit_media', compact('media', 'genres'));
+        $actors = Actor::all(); // Tambahkan ini
+    
+        return view('admin.edit_media', compact('media', 'genres', 'actors'));
     }
 
     public function updateMedia(Request $request, $id)
@@ -102,7 +127,25 @@ class AdminController extends Controller
         } else {
             $media->genres()->detach(); // Kosongkan genre jika tidak ada yang dicentang
         }
+        if ($request->has('actors')) {
+            $media->actors()->sync($request->actors);
+        } else {
+            $media->actors()->detach();
+        }
 
         return redirect()->route('admin.panel')->with('success', 'Data Media berhasil diperbarui!');
     }
+    public function storeActor(Request $request) {
+        $request->validate(['nama_aktor' => 'required']);
+        Actor::create($request->all());
+        return redirect()->back()->with('success', 'Aktor berhasil ditambah');
+    }
+    public function destroyActor($id)
+    {
+        $actor = \App\Models\Actor::findOrFail($id);
+        $actor->delete(); 
+        
+        return back()->with('success', 'Pemeran berhasil dihapus!');
+    }
+
 }

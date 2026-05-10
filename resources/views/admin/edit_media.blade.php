@@ -85,6 +85,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label text-white small">Pilih Pemeran</label>
+                    <div class="bg-dark p-3 rounded border border-secondary" style="max-height: 150px; overflow-y: auto;">
+                        @foreach($actors as $actor)
+                            <div class="form-check">
+                                <!-- Logika 'contains' ini yang membuat checkbox tercentang otomatis -->
+                                <input class="form-check-input" type="checkbox" name="actors[]" 
+                                    value="{{ $actor->actor_id }}" 
+                                    id="actor{{ $actor->actor_id }}"
+                                    {{ ($media->actors && $media->actors->contains('actor_id', $actor->actor_id)) ? 'checked' : '' }}>
+                                <label class="form-check-label text-light small" for="actor{{ $actor->actor_id }}">
+                                    {{ $actor->nama_aktor }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-info w-100 fw-bold text-dark">Simpan Perubahan Data</button>
             </form>
         </div>
