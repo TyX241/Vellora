@@ -31,9 +31,7 @@
         <div class="alert alert-success bg-success text-white border-0">{{ session('success') }}</div>
     @endif
 
-    <!-- BARIS 1: GENRE & ENTRY MEDIA -->
     <div class="row mb-4">
-        <!-- Kolom Kiri: Genre -->
         <div class="col-md-5 col-lg-4 d-flex flex-column gap-3">
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-secondary">
@@ -54,14 +52,15 @@
             <div class="card shadow-sm flex-fill">
                 <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 text-light fw-bold">Kelola Genre</h6>
-                    <form action="{{ route('admin.panel') }}" method="GET" class="d-flex">
-                        <input type="text" name="search_genre" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari..." value="{{ request('search_genre') }}">
+                    <form id="formSearchGenre" action="{{ route('admin.panel') }}" method="GET" class="d-flex">
+                        <input id="inputSearchGenre" type="text" name="search_genre" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari..." value="{{ request('search_genre') }}">
                     </form>
                 </div>
                 <div class="card-body p-0 genre-list" style="max-height: 300px; overflow-y: auto;">
                     <div class="row g-0 p-2">
                         @forelse($genres as $g)
-                            <div class="col-12 mb-2 px-1"> <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
+                            <div class="col-12 mb-2 px-1"> 
+                                <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
                                     <span class="small text-white">{{ $g->nama_genre }}</span>
                                     <form action="{{ route('admin.genre.destroy', $g->genre_id) }}" method="POST" onsubmit="return confirm('Hapus genre ini?')">
                                         @csrf 
@@ -73,14 +72,13 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="col-12 text-center text-secondary small py-3">Genre tidak ditemukan</div>
+                            <div class="col-12 text-center text-secondary small py-3">Tidak ada data genre.</div>
                         @endforelse
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kolom Kanan: Entry Media Baru -->
         <div class="col-md-7 col-lg-8">
             <div class="card shadow-sm h-100">
                 <div class="card-header border-bottom border-secondary">
@@ -127,12 +125,14 @@
                                 <input type="text" id="searchCheckboxGenre" class="form-control form-control-sm mb-1 bg-dark text-white border-secondary" placeholder="Filter genre...">
                                 
                                 <div class="bg-dark p-2 rounded border border-secondary" style="max-height: 100px; overflow-y: auto;" id="genreCheckboxList">
-                                    @foreach($genres_all ?? $genres as $genre) {{-- Gunakan variabel semua genre --}}
+                                    @forelse($genres_all ?? $genres as $genre)
                                         <div class="form-check small genre-item">
                                             <input class="form-check-input" type="checkbox" name="genres[]" value="{{ $genre->genre_id }}" id="g{{ $genre->genre_id }}">
                                             <label class="form-check-label" for="g{{ $genre->genre_id }}">{{ $genre->nama_genre }}</label>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="small text-danger">Belum ada data genre.</div>
+                                    @endforelse
                                 </div>
                             </div>
 
@@ -141,12 +141,14 @@
                                 <input type="text" id="searchCheckboxActor" class="form-control form-control-sm mb-1 bg-dark text-white border-secondary" placeholder="Filter pemeran...">
                                 
                                 <div class="bg-dark p-2 rounded border border-secondary" style="max-height: 100px; overflow-y: auto;" id="actorCheckboxList">
-                                    @foreach($actors_all ?? $actors as $actor)
+                                    @forelse($actors_all ?? $actors as $actor)
                                         <div class="form-check small actor-item">
                                             <input class="form-check-input" type="checkbox" name="actors[]" value="{{ $actor->actor_id }}" id="a{{ $actor->actor_id }}">
                                             <label class="form-check-label" for="a{{ $actor->actor_id }}">{{ $actor->nama_aktor }}</label>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="small text-danger">Belum ada data pemeran.</div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
@@ -157,9 +159,7 @@
         </div>
     </div>
 
-    <!-- BARIS 2: PEMERAN (HORIZONTAL) -->
     <div class="row mb-4">
-        <!-- Tambah Pemeran -->
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header border-bottom border-secondary">
@@ -177,13 +177,12 @@
                 </div>
             </div>
         </div>
-        <!-- Kelola Pemeran -->
         <div class="col-md-8">
             <div class="card shadow-sm h-100">
                 <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 text-light fw-bold">Kelola Pemeran (Hapus)</h6>
-                    <form action="{{ route('admin.panel') }}" method="GET" class="d-flex w-50">
-                        <input type="text" name="actor_search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari pemeran..." value="{{ request('actor_search') }}">
+                    <form id="formSearchPemeran" action="{{ route('admin.panel') }}" method="GET" class="d-flex w-50">
+                        <input id="inputSearchPemeran" type="text" name="actor_search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari pemeran..." value="{{ request('actor_search') }}">
                     </form>
                 </div>
                 <div class="card-body p-0 actor-list" style="max-height: 150px; overflow-y: auto;">
@@ -207,7 +206,6 @@
         </div>
     </div>
 
-    <!-- BARIS 3: KELOLA MEDIA -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -216,51 +214,54 @@
                         <h6 class="mb-0 text-light fw-bold">Kelola Media</h6>
                         <span class="badge bg-secondary">{{ $allMedia->count() }} Items</span>
                     </div>
-                    <form action="{{ route('admin.panel') }}" method="GET" class="d-flex">
-                        <input type="text" name="search" class="form-control form-control-sm bg-dark text-light border-secondary me-2" placeholder="Cari Judul..." value="{{ $search ?? '' }}">
-                        <button type="submit" class="btn btn-outline-warning btn-sm">🔎</button>
+                    <form id="formSearchMedia" action="{{ route('admin.panel') }}" method="GET" class="d-flex">
+                        <input id="inputSearchMedia" type="text" name="search" class="form-control form-control-sm bg-dark text-light border-secondary me-2" placeholder="Cari Judul..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-outline-warning btn-sm d-none">🔎</button>
                     </form>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0 align-middle text-center" style="font-size: 0.85rem;">
-                            <thead class="border-bottom border-secondary">
+                        <table class="table table-dark table-hover mb-0 align-middle text-center" style="font-size: 0.85rem; table-layout: fixed; width: 100%;">
+                            <thead class="align-middle border-bottom border-secondary">
                                 <tr class="text-secondary">
-                                    <th style="width: 80px;">Poster</th>
-                                    <th class="text-start">Judul & Format</th>
-                                    <th>Status</th>
-                                    <th>Genre</th>
-                                    <th style="width: 120px;">Aksi</th>
+                                    <th style="width: 10%;" class="py-3 px-2">Poster</th>
+                                    <th style="width: 35%;" class="py-3">Judul</th>
+                                    <th style="width: 15%;" class="py-3">Status</th>
+                                    <th style="width: 25%;" class="py-3">Genre</th>
+                                    <th style="width: 15%;" class="py-3 px-2">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="align-middle">
                                 @forelse($allMedia as $item)
                                     <tr>
-                                        <td>
-                                            <img src="{{ $item->poster_url ?? 'https://via.placeholder.com/40x60' }}" class="rounded" style="width: 40px; height: 60px; object-fit: cover;">
+                                        <td class="align-middle px-2">
+                                            <div class="d-flex justify-content-center align-items-center h-100 py-1">
+                                                <img src="{{ $item->poster_url ?? 'https://via.placeholder.com/40x60' }}" class="rounded" style="width: 40px; height: 60px; object-fit: contain; background-color: #1a1a1a;">
+                                            </div>
                                         </td>
-                                        <td class="text-start">
+                                        <td class="align-middle">
                                             <div class="fw-bold text-light">{{ $item->judul }}</div>
-                                            <small class="text-secondary">{{ $item->format_tayangan }} | {{ $item->negara_asal }}</small>
                                         </td>
-                                        <td><span class="badge bg-secondary">{{ $item->status_tayang }}</span></td>
-                                        <td class="text-truncate" style="max-width: 150px;">
+                                        <td class="align-middle">
+                                            <span class="badge bg-secondary">{{ $item->status_tayang }}</span>
+                                        </td>
+                                        <td class="text-truncate align-middle" style="max-width: 150px;">
                                             @foreach($item->genres as $g)
                                                 <span class="text-info" style="font-size: 0.7rem;">#{{ $g->nama_genre }}</span>
                                             @endforeach
                                         </td>
-                                        <td>
-                                            <div class="d-flex gap-2 justify-content-center">
-                                                <a href="{{ route('admin.media.edit', $item->media_id) }}" class="btn btn-outline-info btn-sm">Edit</a>
-                                                <form action="{{ route('admin.media.destroy', $item->media_id) }}" method="POST">
+                                        <td class="align-middle px-2">
+                                            <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
+                                                <a href="{{ route('admin.media.edit', $item->media_id) }}" class="btn btn-outline-info btn-sm w-100" style="font-size: 0.75rem; py-1;">Edit</a>
+                                                <form action="{{ route('admin.media.destroy', $item->media_id) }}" method="POST" class="w-100 m-0">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100" style="font-size: 0.75rem; py-1;">Hapus</button>
                                                 </form>
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="5" class="py-4 text-secondary">Belum ada media.</td></tr>
+                                    <tr><td colspan="5" class="py-4 text-secondary align-middle">Tidak ada data media.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -273,28 +274,66 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Fungsi Filter Universal
+    // Fungsi Filter Universal (Client-side) untuk Checkbox Form Input
     function setupFilter(inputId, listId, itemClass) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
         const items = list.getElementsByClassName(itemClass);
 
-        input.addEventListener('keyup', function() {
-            const filter = input.value.toLowerCase();
-            Array.from(items).forEach(function(item) {
-                const text = item.textContent || item.innerText;
-                if (text.toLowerCase().indexOf(filter) > -1) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
+        if(input && list) {
+            input.addEventListener('keyup', function() {
+                const filter = input.value.toLowerCase();
+                Array.from(items).forEach(function(item) {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().indexOf(filter) > -1) {
+                        item.style.display = "";
+                    } else {
+                        item.style.display = "none";
+                    }
+                });
             });
-        });
+        }
     }
 
-    // Jalankan filter untuk Genre dan Aktor
     setupFilter('searchCheckboxGenre', 'genreCheckboxList', 'genre-item');
     setupFilter('searchCheckboxActor', 'actorCheckboxList', 'actor-item');
+    
+    // ==========================================
+    // Fungsi Live Search Debounce (Server-side)
+    // ==========================================
+    function setupLiveSearch(inputId, formId) {
+        const input = document.getElementById(inputId);
+        const form = document.getElementById(formId);
+        let timeout = null;
+        
+        if (input && form) {
+            input.addEventListener('input', function () {
+                clearTimeout(timeout);
+                
+                // SIMPAN ID input yang sedang aktif diketik ke memori browser
+                sessionStorage.setItem('lastFocusedInput', inputId);
+
+                // Jeda 500ms setelah selesai mengetik sebelum submit
+                timeout = setTimeout(function () {
+                    form.submit();
+                }, 500); 
+            });
+
+            // HANYA fokuskan kursor jika input ini adalah yang terakhir kali diketik
+            if (sessionStorage.getItem('lastFocusedInput') === inputId) {
+                input.focus();
+                // Trik memposisikan kursor di akhir teks agar ketikan tidak terganggu
+                let val = input.value;
+                input.value = '';
+                input.value = val;
+            }
+        }
+    }
+
+    // Terapkan Live Search ke masing-masing input tabel
+    setupLiveSearch('inputSearchGenre', 'formSearchGenre');
+    setupLiveSearch('inputSearchPemeran', 'formSearchPemeran');
+    setupLiveSearch('inputSearchMedia', 'formSearchMedia');
 });
 </script>
 </body>
