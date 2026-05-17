@@ -4,34 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB; // Tambahkan ini wajib!
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(); 
+        $user = Auth::user();
+        // Cek ID user (jaga-jaga kalau kalian pakai primary key 'user_id' atau 'id')
+        $userId = $user->user_id ?? $user->id; 
 
-        // NANTI KITA UBAH INI JADI QUERY DATABASE ASLI DI TAHAP 2
-        // Data Dummy Statistik
-        $stats = [
-            'total_reviews' => 24,
-            'total_watch_time' => '142 Jam',
-            'top_genre' => 'Sci-Fi & Thriller'
-        ];
+        // 1. STATISTIK: Hitung total review asli dari database
+        $totalReviews = DB::table('reviews')->where('user_id', $userId)->count();
 
-        // Data Dummy Watchlist (Sedang ditonton, Selesai, dll)
-        $watchlists = [
-            ['title' => 'Oppenheimer', 'status' => 'Selesai', 'type' => 'Movie'],
-            ['title' => 'Shogun', 'status' => 'Sedang Menonton', 'type' => 'Series'],
-            ['title' => 'Dune: Part Two', 'status' => 'Rencana', 'type' => 'Movie'],
-        ];
+        // 2. WATCHLIST: Ambil 5 aktivitas terbaru milik user, gabung (join) dengan tabel media biar dapat judulnya
+        $watchlists = DB::table('watchlists')
+            ->join('media', 'watchlists.media_id', '=', 'media.media_id')
+            ->where('watchlists.user_id', $userId)
+            ->orderBy('watchlists.waktu_diubah', 'desc')
+            ->limit(5)
+            ->get();
 
-        // Data Dummy Playlist
-        $playlists = [
-            ['name' => 'Sci-Fi Masterpieces', 'count' => 12, 'visibility' => 'Public'],
-            ['name' => 'Weekend Chill', 'count' => 5, 'visibility' => 'Private'],
-        ];
+        // 3. PLAYLIST: Ambil playlist asli buatan user
+        $playlists = DB::table('playlists')
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('profile.index', compact('user', 'stats', 'watchlists', 'playlists'));
+        return view('profile.index', compact('user', 'totalReviews', 'watchlists', 'playlists'));
     }
 }
