@@ -67,9 +67,9 @@
 <div class="browse-header">
     <div>
         <h1 class="browse-title">{{ $title }}</h1>
-        <p class="browse-sub">Menampilkan {{ $results->count() }} tayangan yang memenuhi kriteria.</p>
+        <!-- <p class="browse-sub">Menampilkan {{ $results->count() }} tayangan yang memenuhi kriteria.</p> -->
     </div>
-    <a href="{{ route('home') }}" class="btn-ghost">← Kembali</a>
+    <!-- <a href="{{ route('home') }}" class="btn-ghost">← Kembali</a> -->
 </div>
 
 <!-- FILTER BAR -->
@@ -134,7 +134,7 @@
         <a href="/tayangan/{{ $media->media_id }}" class="media-card">
             <div class="poster-wrap">
                 <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
-                <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
+                <!-- <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span> -->
             </div>
             <div class="media-card-title">{{ $media->judul }}</div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px;">

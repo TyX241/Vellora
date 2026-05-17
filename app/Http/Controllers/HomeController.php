@@ -10,28 +10,23 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // 1. Hot: 10 tayangan terbaru berdasarkan tanggal rilis
         $hotMedia = Media::orderBy('tanggal_rilis', 'desc')->limit(10)->get();
-        
-        // 2. Top Rated: Diurutkan berdasarkan rata-rata rating tertinggi dari tabel reviews
+
         $topRatedMedia = Media::withAvg('reviews', 'rating')
             ->orderBy('reviews_avg_rating', 'desc')
             ->limit(10)
             ->get();
-        
-        // 3. Populer: Diurutkan berdasarkan jumlah akumulasi media ini disimpan di watchlist user
+
         $populerMedia = Media::withCount('watchlists')
             ->orderBy('watchlists_count', 'desc')
             ->limit(10)
             ->get();
-        
-        // 4. Ongoing: Tayangan dengan status Ongoing terbaru
+
         $ongoingMedia = Media::where('status_tayang', 'Ongoing')->latest()->limit(10)->get();
 
         return view('home', compact('hotMedia', 'topRatedMedia', 'populerMedia', 'ongoingMedia'));
     }
 
-    // Fungsi Pengambilan Kriteria Halaman Browse All
     public function browse(Request $request, $type)
     {
         $query = Media::query();
@@ -58,7 +53,6 @@ class HomeController extends Controller
                 abort(404);
         }
 
-        // Filter opsional
         $filterKategori = $request->input('kategori');
         $filterGenre    = $request->input('genre');
         $filterAnimasi  = $request->input('animasi');
@@ -105,7 +99,6 @@ class HomeController extends Controller
             $mediaQuery->where('status_tayang', $filterStatus);
         }
 
-        // Hanya tampilkan hasil kalau ada input apapun
         if ($query || $filterKategori || $filterGenre || $filterStatus) {
             $results = $mediaQuery->latest()->get();
         } else {

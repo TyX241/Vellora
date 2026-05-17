@@ -9,18 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class PlaylistController extends Controller
 {
-    // Menampilkan semua playlist milik pengguna
     public function index()
     {
         $playlists = Playlist::withCount('items')
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
-            
+
         return view('playlists.index', compact('playlists'));
     }
 
-    // Menyimpan playlist baru ke database
     public function store(Request $request)
     {
         $request->validate([
@@ -37,30 +35,27 @@ class PlaylistController extends Controller
         return back()->with('success', 'Playlist baru berhasil dibuat!');
     }
 
-    // Melihat isi spesifik dari suatu playlist beserta item medianya
     public function show($id)
     {
         $playlist = Playlist::with('items.media')
             ->where('playlist_id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
-            
+
         return view('playlists.show', compact('playlist'));
     }
 
-    // Menghapus sebuah playlist
     public function destroy($id)
     {
         $playlist = Playlist::where('playlist_id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
-            
+
         $playlist->delete();
 
         return redirect()->route('playlists.index')->with('success', 'Playlist berhasil dihapus.');
     }
 
-    // Menambahkan tayangan film/series/anime ke dalam playlist kustom
     public function addMedia(Request $request)
     {
         $request->validate([
@@ -68,12 +63,10 @@ class PlaylistController extends Controller
             'media_id' => 'required|exists:media,media_id'
         ]);
 
-        // Proteksi kepemilikan playlist
         Playlist::where('playlist_id', $request->playlist_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // Validasi duplikasi item di playlist yang sama
         $exists = PlaylistItem::where('playlist_id', $request->playlist_id)
             ->where('media_id', $request->media_id)
             ->exists();
@@ -90,12 +83,10 @@ class PlaylistController extends Controller
         return back()->with('success', 'Berhasil menambahkan tayangan ke playlist!');
     }
 
-    // Mengeluarkan tayangan dari playlist kustom
     public function removeMedia($id)
     {
         $item = PlaylistItem::findOrFail($id);
-        
-        // Proteksi kepemilikan playlist sebelum menghapus item di dalamnya
+
         Playlist::where('playlist_id', $item->playlist_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
@@ -112,9 +103,8 @@ class PlaylistController extends Controller
             'deskripsi' => 'nullable|string'
         ]);
 
-        // Proteksi agar hanya pemilik playlist yang bisa mengubahnya
         $playlist = Playlist::where('playlist_id', $id)->where('user_id', auth()->id())->firstOrFail();
-        
+
         $playlist->update([
             'nama_playlist' => $request->nama_playlist,
             'deskripsi' => $request->deskripsi

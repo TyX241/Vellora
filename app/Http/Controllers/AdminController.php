@@ -14,41 +14,36 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         try {
-            // 1. Ambil keyword dari request (sesuaikan dengan name di HTML)
-            $search = $request->input('search');          // Untuk Media
-            $genreSearch = $request->input('search_genre'); // SESUAIKAN DENGAN HTML
-            $actorSearch = $request->input('actor_search'); // Untuk Aktor
+            $search = $request->input('search');
+            $genreSearch = $request->input('search_genre');
+            $actorSearch = $request->input('actor_search');
 
-            // 2. Query Media
             $mediaQuery = Media::latest();
             if ($search) {
                 $mediaQuery->where('judul', 'like', '%' . $search . '%');
             }
             $allMedia = $mediaQuery->get();
 
-            // 3. Query Genre
             $genreQuery = Genre::query();
             if ($genreSearch) {
                 $genreQuery->where('nama_genre', 'like', '%' . $genreSearch . '%');
             }
             $genres = $genreQuery->orderBy('nama_genre', 'asc')->get();
 
-            // 4. Query Aktor
             $actorQuery = Actor::query();
             if ($actorSearch) {
                 $actorQuery->where('nama_aktor', 'like', '%' . $actorSearch . '%');
             }
             $actors = $actorQuery->orderBy('nama_aktor', 'asc')->get();
-            $characters = \App\Models\Character::with('actor')->get(); 
+            $characters = \App\Models\Character::with('actor')->get();
 
-            // 5. Return View
             $genres_all = Genre::orderBy('nama_genre', 'asc')->get();
             $actors_all = Actor::orderBy('nama_aktor', 'asc')->get();
 
             return view('admin.panel', compact(
-                'genres', 'allMedia', 'actors', 
+                'genres', 'allMedia', 'actors',
                 'search', 'characters', 'genreSearch', 'actorSearch',
-                'genres_all', 'actors_all' // Kirim data lengkapnya
+                'genres_all', 'actors_all'
             ));
 
         } catch (\Exception $e) {
@@ -66,7 +61,6 @@ class AdminController extends Controller
 
     public function storeMedia(Request $request)
     {
-        // Validasi input dasar
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'durasi_per_episode' => 'nullable|integer',
@@ -75,13 +69,11 @@ class AdminController extends Controller
             'poster_url' => 'nullable|url',
         ]);
 
-        // Simpan data media
         $media = Media::create($request->all());
 
         if($request->has('genres')) {
             $media->genres()->attach($request->genres);
         }
-        // Tambahkan ini:
         if($request->has('actors')) {
             $media->actors()->attach($request->actors);
         }
@@ -91,7 +83,7 @@ class AdminController extends Controller
     public function destroyMedia($id)
     {
         $media = Media::findOrFail($id);
-        $media->delete(); // Ini akan menghapus data media dan relasi di tabel pivot karena kita menggunakan cascade di migration
+        $media->delete();
 
         return back()->with('success', 'Media berhasil dihapus!');
     }
@@ -109,11 +101,8 @@ class AdminController extends Controller
         $media = Media::with(['genres', 'actors', 'characters'])->findOrFail($id);
         $genres = Genre::all();
         $actors = Actor::all();
-        
-        // TAMBAHKAN INI: Ambil semua data karakter yang tersedia
-        $all_characters = \App\Models\Character::with('actor')->get(); 
-        
-        // Tambahkan 'all_characters' ke dalam compact
+        $all_characters = \App\Models\Character::with('actor')->get();
+
         return view('admin.edit_media', compact('media', 'genres', 'actors', 'all_characters'));
     }
 
@@ -148,35 +137,30 @@ class AdminController extends Controller
         
         return back()->with('success', 'Pemeran berhasil dihapus!');
     }
-    public function storeCharacter(Request $request) 
+    public function storeCharacter(Request $request)
     {
-        // 1. Validasi input
         $request->validate([
             'media_id' => 'required',
             'actor_id' => 'required',
             'nama_karakter' => 'required|string|max:255',
-            'peran' => 'required|in:Utama,Pendukung' // Validasi tambahan
+            'peran' => 'required|in:Utama,Pendukung'
         ]);
 
-        // 2. Simpan ke database
         $character = \App\Models\Character::create([
             'media_id' => $request->media_id,
             'actor_id' => $request->actor_id,
             'nama_karakter' => $request->nama_karakter,
-            'peran' => $request->peran, // Simpan data peran
+            'peran' => $request->peran,
         ]);
         $media = \App\Models\Media::findOrFail($request->media_id);
         $media->characters()->attach($character->character_id);
 
-        // 3. Kembali ke halaman sebelumnya
         return back()->with('success', 'Karakter berhasil ditambahkan!');
     }
 
-    public function destroyCharacter($id) 
+    public function destroyCharacter($id)
     {
         \App\Models\Character::findOrFail($id)->delete();
         return back()->with('success', 'Karakter berhasil dihapus!');
     }
-    
-
 }

@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Character extends Model
 {
-    // Tambahkan baris ini:
     protected $table = 'characters';
     protected $primaryKey = 'character_id';
 
-    // Tambahkan ini jika kamu ingin Laravel tahu ini adalah integer
     public $incrementing = true;
     protected $keyType = 'int';
 

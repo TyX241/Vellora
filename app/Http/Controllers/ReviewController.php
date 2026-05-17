@@ -12,11 +12,10 @@ class ReviewController extends Controller
     {
         $request->validate([
             'media_id' => 'required|exists:media,media_id',
-            'rating' => 'required|numeric|min:1|max:10', // Skala rating 1 - 10
+            'rating' => 'required|numeric|min:1|max:10',
             'komentar' => 'nullable|string'
         ]);
 
-        // Menggunakan updateOrCreate agar setiap user hanya bisa memberikan 1 ulasan per tayangan
         Review::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -25,7 +24,6 @@ class ReviewController extends Controller
             [
                 'rating' => $request->rating,
                 'komentar' => $request->komentar,
-                // waktu_dibuat otomatis diisi oleh database berkat useCurrent()
             ]
         );
 
@@ -34,7 +32,6 @@ class ReviewController extends Controller
 
     public function destroy($id)
     {
-        // Memastikan hanya pemilik ulasan yang bisa menghapusnya
         $review = Review::where('review_id', $id)->where('user_id', Auth::id())->firstOrFail();
         $review->delete();
 

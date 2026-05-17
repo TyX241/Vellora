@@ -8,16 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class WatchlistController extends Controller
 {
-    // Menampilkan halaman profil watchlist pengguna
     public function index()
     {
-        // Ambil semua watchlist milik user yang sedang login beserta data medianya
         $watchlists = Watchlist::with('media')->where('user_id', Auth::id())->latest('waktu_diubah')->get();
-        
+
         return view('watchlist.index', compact('watchlists'));
     }
 
-    // Memasukkan atau memperbarui status tontonan (Upsert)
     public function store(Request $request)
     {
         $request->validate([
@@ -25,7 +22,6 @@ class WatchlistController extends Controller
             'status' => 'required|in:Plan to Watch,Watching,Completed,Dropped',
         ]);
 
-        // updateOrCreate akan mengecek: jika user sudah menambahkan media ini, update statusnya. Jika belum, buat baru.
         Watchlist::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -33,14 +29,12 @@ class WatchlistController extends Controller
             ],
             [
                 'status' => $request->status,
-                // Kolom 'waktu_diubah' otomatis diperbarui oleh database berkat useCurrentOnUpdate() di file migration
             ]
         );
 
         return back()->with('success', 'Watchlist berhasil diperbarui!');
     }
 
-    // Menghapus dari watchlist
     public function destroy($id)
     {
         $watchlist = Watchlist::where('watchlist_id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -49,7 +43,6 @@ class WatchlistController extends Controller
         return back()->with('success', 'Tayangan dihapus dari Watchlist.');
     }
 
-    // Update status watchlist
     public function update(Request $request, $id)
     {
         $request->validate([

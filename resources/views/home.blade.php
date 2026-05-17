@@ -106,7 +106,7 @@
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrap">
                     <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
-                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
+                    <!-- <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span> -->
                 </div>
                 <div class="media-card-title">{{ $media->judul }}</div>
                 <div class="media-card-meta">{{ $media->format_tayangan }}</div>
@@ -127,7 +127,7 @@
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrap">
                     <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
-                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
+                    <!-- <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span> -->
                 </div>
                 <div class="media-card-title">{{ $media->judul }}</div>
                 @if($media->reviews_avg_rating)
@@ -152,7 +152,7 @@
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrap">
                     <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
-                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
+                    <!-- <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span> -->
                 </div>
                 <div class="media-card-title">{{ $media->judul }}</div>
                 <div class="media-card-meta">{{ $media->format_tayangan }}</div>
@@ -173,7 +173,7 @@
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrap">
                     <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
-                    <span class="poster-badge ongoing">Ongoing</span>
+                    <!-- <span class="poster-badge ongoing">Ongoing</span> -->
                 </div>
                 <div class="media-card-title">{{ $media->judul }}</div>
                 <div class="media-card-meta">{{ $media->format_tayangan }}</div>

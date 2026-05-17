@@ -6,16 +6,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\WatchlistController;
-use App\Http\Controllers\ReviewController;  
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PlaylistController;
 
-// Halaman Utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 Route::get('/browse/{type}', [App\Http\Controllers\HomeController::class, 'browse'])->name('browse');
 Route::get('/tayangan/{id}', [MediaController::class, 'show'])->name('media.show');
 
-// Route untuk Guest (Belum Login)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -23,13 +21,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Route untuk Auth (Sudah Login)
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    // Nantinya route profile bisa ditaruh di sini
-    // --- TAMBAH ROUTE PROFILE DI SINI ---
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
-    // ------------------------------------
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/watchlist', [WatchlistController::class, 'store'])->name('watchlist.store');
     Route::put('/watchlist/{id}', [WatchlistController::class, 'update'])->name('watchlist.update');
@@ -47,7 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/playlists/item/{id}', [PlaylistController::class, 'removeMedia'])->name('playlists.removeMedia');
 });
 
- // Panel Admin Sementara
 Route::get('/admin/panel', [AdminController::class, 'index'])->name('admin.panel');
 Route::post('/admin/genre', [AdminController::class, 'storeGenre'])->name('admin.genre.store');
 Route::post('/admin/media', [AdminController::class, 'storeMedia'])->name('admin.media.store');

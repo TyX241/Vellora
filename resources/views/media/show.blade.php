@@ -137,7 +137,7 @@
         <h1 class="media-title-main">{{ $media->judul }}</h1>
 
         <div class="media-rating-row">
-            <span class="media-score">{{ $averageRating ? number_format($averageRating, 1) : '—' }}</span>
+            <span class="media-score">{{ $averageRating ? number_format($averageRating, 1) : 'N/A' }}</span>
             <span class="media-score-denom">/ 10</span>
             <span class="media-review-count">({{ $media->reviews->count() }} ulasan)</span>
         </div>
