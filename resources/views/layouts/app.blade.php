@@ -26,8 +26,12 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                </ul>
+                
+                <form action="{{ route('search') }}" method="GET" class="d-flex mx-auto my-2 my-lg-0" style="width: 100%; max-width: 500px;">
+                    <input type="text" name="q" class="form-control bg-dark text-light border-secondary" 
+                           placeholder="Cari judul tayangan..." value="{{ request('q') }}" required>
+                    <button type="submit" class="btn btn-warning ms-2 fw-bold px-4">Cari</button>
+                </form>
                 
                 <ul class="navbar-nav">
                     @guest

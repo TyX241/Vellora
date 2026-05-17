@@ -26,4 +26,19 @@ class HomeController extends Controller
 
         return view('home', compact('hotMedia', 'completedMedia', 'ongoingMedia', 'topRatedMedia'));
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $results = collect(); // Koleksi kosong sebagai default jika tidak ada pencarian
+
+        if ($query) {
+            // Mencari media yang judulnya mengandung kata kunci pencarian
+            $results = Media::where('judul', 'like', '%' . $query . '%')
+                            ->latest()
+                            ->get();
+        }
+
+        return view('search', compact('results', 'query'));
+    }
 }

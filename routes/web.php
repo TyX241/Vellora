@@ -10,6 +10,7 @@ use App\Http\Controllers\ReviewController;
 
 // Halaman Utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 Route::get('/tayangan/{id}', [MediaController::class, 'show'])->name('media.show');
 
 // Route untuk Guest (Belum Login)
