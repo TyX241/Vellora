@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Media;
 use App\Models\Genre;
 use App\Models\Actor;
+use App\Models\Character;
 use Illuminate\Http\Request;
+
 
 class AdminController extends Controller
 {
@@ -37,6 +39,7 @@ class AdminController extends Controller
                 $actorQuery->where('nama_aktor', 'like', '%' . $actorSearch . '%');
             }
             $actors = $actorQuery->orderBy('nama_aktor', 'asc')->get();
+            $characters = \App\Models\Character::with('actor')->get(); 
 
             // 5. Return View
             $genres_all = Genre::orderBy('nama_genre', 'asc')->get();
@@ -44,7 +47,7 @@ class AdminController extends Controller
 
             return view('admin.panel', compact(
                 'genres', 'allMedia', 'actors', 
-                'search', 'genreSearch', 'actorSearch',
+                'search', 'characters', 'genreSearch', 'actorSearch',
                 'genres_all', 'actors_all' // Kirim data lengkapnya
             ));
 
@@ -102,11 +105,15 @@ class AdminController extends Controller
 
     public function editMedia($id)
     {
-        $media = Media::with('genres')->findOrFail($id);
+        $media = Media::with(['genres', 'actors', 'characters'])->findOrFail($id);
         $genres = Genre::all();
-        $actors = Actor::all(); // Tambahkan ini
-    
-        return view('admin.edit_media', compact('media', 'genres', 'actors'));
+        $actors = Actor::all();
+        
+        // TAMBAHKAN INI: Ambil semua data karakter yang tersedia
+        $all_characters = \App\Models\Character::with('actor')->get(); 
+        
+        // Tambahkan 'all_characters' ke dalam compact
+        return view('admin.edit_media', compact('media', 'genres', 'actors', 'all_characters'));
     }
 
     public function updateMedia(Request $request, $id)
@@ -122,16 +129,9 @@ class AdminController extends Controller
 
         $media->update($request->except('genres'));
 
-        if ($request->has('genres')) {
-            $media->genres()->sync($request->genres);
-        } else {
-            $media->genres()->detach(); // Kosongkan genre jika tidak ada yang dicentang
-        }
-        if ($request->has('actors')) {
-            $media->actors()->sync($request->actors);
-        } else {
-            $media->actors()->detach();
-        }
+        $media->genres()->sync($request->genres ?? []);
+        $media->actors()->sync($request->actors ?? []);
+        $media->characters()->sync($request->characters ?? []); 
 
         return redirect()->route('admin.panel')->with('success', 'Data Media berhasil diperbarui!');
     }
@@ -147,5 +147,31 @@ class AdminController extends Controller
         
         return back()->with('success', 'Pemeran berhasil dihapus!');
     }
+    public function storeCharacter(Request $request) 
+    {
+        // 1. Validasi input
+        $request->validate([
+            'media_id' => 'required',
+            'actor_id' => 'required',
+            'nama_karakter' => 'required|string|max:255'
+        ]);
+
+        // 2. Simpan ke database
+        \App\Models\Character::create([
+            'media_id' => $request->media_id,
+            'actor_id' => $request->actor_id,
+            'nama_karakter' => $request->nama_karakter,
+        ]);
+
+        // 3. Kembali ke halaman sebelumnya
+        return back()->with('success', 'Karakter berhasil ditambahkan!');
+    }
+
+    public function destroyCharacter($id) 
+    {
+        \App\Models\Character::findOrFail($id)->delete();
+        return back()->with('success', 'Karakter berhasil dihapus!');
+    }
+    
 
 }

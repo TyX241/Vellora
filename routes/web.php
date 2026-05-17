@@ -42,3 +42,5 @@ Route::get('/admin/media/{id}/edit', [AdminController::class, 'editMedia'])->nam
 Route::put('/admin/media/{id}', [AdminController::class, 'updateMedia'])->name('admin.media.update');
 Route::post('/admin/actors', [AdminController::class, 'storeActor'])->name('admin.actors.store');
 Route::delete('/admin/actors/{id}', [AdminController::class, 'destroyActor'])->name('admin.actors.destroy');
+Route::post('/admin/characters', [AdminController::class, 'storeCharacter'])->name('admin.characters.store');
+Route::delete('/admin/characters/{id}', [AdminController::class, 'destroyCharacter'])->name('admin.characters.destroy');

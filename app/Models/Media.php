@@ -21,4 +21,8 @@ class Media extends Model
     {
         return $this->belongsToMany(Actor::class, 'media_actors', 'media_id', 'actor_id');
     }
+    public function characters() {
+        // Media punya banyak karakter melalui tabel pivot media_characters
+        return $this->belongsToMany(Character::class, 'media_characters', 'media_id', 'character_id');
+    }
 }

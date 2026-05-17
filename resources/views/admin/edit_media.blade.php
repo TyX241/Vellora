@@ -102,10 +102,41 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="mb-3">
+                <label class="form-label text-white small">Pilih Karakter</label>
+                <div class="bg-dark p-3 rounded border border-secondary" style="max-height: 200px; overflow-y: auto;">
+                    <input type="text" id="searchChar" class="form-control form-control-sm mb-2" placeholder="Cari karakter...">
+                    <div id="charList">
+                        @foreach($all_characters as $char)
+                            <div class="form-check char-item">
+                                <input class="form-check-input" type="checkbox" name="characters[]" 
+                                    value="{{ $char->character_id }}" 
+                                    id="char{{ $char->character_id }}"
+                                    {{ $media->characters->contains('character_id', $char->character_id) ? 'checked' : '' }}>
+                                <label class="form-check-label text-light small" for="char{{ $char->character_id }}">
+                                    {{ $char->nama_karakter }} <span class="text-secondary">({{ $char->actor->nama_aktor }})</span>
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
                 <button type="submit" class="btn btn-info w-100 fw-bold text-dark">Simpan Perubahan Data</button>
             </form>
+            
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('searchCharacter').addEventListener('keyup', function() {
+    let filter = this.value.toLowerCase();
+    let items = document.getElementsByClassName('character-item');
+    Array.from(items).forEach(item => {
+        let text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
 </body>
 </html>

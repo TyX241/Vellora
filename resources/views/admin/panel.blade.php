@@ -55,13 +55,13 @@
                 <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 text-light fw-bold">Kelola Genre</h6>
                     <form action="{{ route('admin.panel') }}" method="GET" class="d-flex">
-                        <input type="text" name="search_genre" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari..." value="{{ request('search_genre') }}">
+                        <input type="text" id="searchGenreList" name="search_genre" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari..." value="{{ request('search_genre') }}">
                     </form>
                 </div>
                 <div class="card-body p-0 genre-list" style="max-height: 300px; overflow-y: auto;">
-                    <div class="row g-0 p-2">
+                    <div class="row g-0 p-2" id="genreManagementList">
                         @forelse($genres as $g)
-                            <div class="col-12 mb-2 px-1"> <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
+                            <div class="col-12 mb-2 px-1 genre-item-row"> <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
                                     <span class="small text-white">{{ $g->nama_genre }}</span>
                                     <form action="{{ route('admin.genre.destroy', $g->genre_id) }}" method="POST" onsubmit="return confirm('Hapus genre ini?')">
                                         @csrf 
@@ -183,13 +183,13 @@
                 <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 text-light fw-bold">Kelola Pemeran (Hapus)</h6>
                     <form action="{{ route('admin.panel') }}" method="GET" class="d-flex w-50">
-                        <input type="text" name="actor_search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari pemeran..." value="{{ request('actor_search') }}">
+                        <input type="text" id="searchActorList" name="actor_search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Cari pemeran..." value="{{ request('actor_search') }}">
                     </form>
                 </div>
                 <div class="card-body p-0 actor-list" style="max-height: 150px; overflow-y: auto;">
-                    <div class="row g-0 p-2">
+                    <div class="row g-0 p-2" id="actorManagementList">
                         @forelse($actors as $a)
-                            <div class="col-md-4 p-1">
+                            <div class="col-md-4 p-1 actor-item-row">
                                 <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
                                     <span class="small text-truncate" style="max-width: 100px;">{{ $a->nama_aktor }}</span>
                                     <form action="{{ route('admin.actors.destroy', $a->actor_id) }}" method="POST" onsubmit="return confirm('Hapus?')">
@@ -206,6 +206,65 @@
             </div>
         </div>
     </div>
+    <!-- BARIS 2: KARAKTER (HORIZONTAL) -->
+<div class="row mb-4">
+    <!-- Tambah Karakter -->
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header border-bottom border-secondary">
+                <h6 class="mb-0 text-light fw-bold">Tambah Karakter</h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('admin.characters.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-2">
+                        <select name="media_id" class="form-select form-select-sm" required>
+                            <option value="">Pilih Media...</option>
+                            @foreach($allMedia as $m) <option value="{{ $m->media_id }}">{{ $m->judul }}</option> @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <select name="actor_id" class="form-select form-select-sm" required>
+                            <option value="">Pilih Aktor...</option>
+                            @foreach($actors as $a) <option value="{{ $a->actor_id }}">{{ $a->nama_aktor }}</option> @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" name="nama_karakter" class="form-control form-control-sm" placeholder="Nama Karakter..." required>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">Simpan Karakter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kelola Karakter -->
+    <div class="col-md-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 text-light fw-bold">Kelola Karakter</h6>
+                <input type="text" id="searchCharacterList" class="form-control form-control-sm w-50 bg-dark text-light border-secondary" placeholder="Cari karakter...">
+            </div>
+            <div class="card-body p-0" style="max-height: 150px; overflow-y: auto;">
+                <div class="row g-0 p-2" id="characterManagementList">
+                    @forelse($characters ?? [] as $c)
+                        <div class="col-md-4 p-1 character-item-row">
+                            <div class="d-flex justify-content-between align-items-center bg-dark p-2 border border-secondary rounded">
+                                <span class="small text-truncate">{{ $c->nama_karakter }} ({{ $c->actor->nama_aktor ?? '-' }})</span>
+                                <form action="{{ route('admin.characters.destroy', $c->character_id) }}" method="POST" onsubmit="return confirm('Hapus?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-link text-danger p-0 fw-bold small text-decoration-none">✕</button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-center text-secondary small py-3">Tidak ada data karakter.</div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- BARIS 3: KELOLA MEDIA -->
     <div class="row">
@@ -273,28 +332,30 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Fungsi Filter Universal
     function setupFilter(inputId, listId, itemClass) {
         const input = document.getElementById(inputId);
-        const list = document.getElementById(listId);
-        const items = list.getElementsByClassName(itemClass);
-
+        if (!input) return; // Mencegah error jika elemen tidak ada
+        
         input.addEventListener('keyup', function() {
             const filter = input.value.toLowerCase();
+            const list = document.getElementById(listId);
+            const items = list.getElementsByClassName(itemClass);
+            
             Array.from(items).forEach(function(item) {
                 const text = item.textContent || item.innerText;
-                if (text.toLowerCase().indexOf(filter) > -1) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
+                item.style.display = (text.toLowerCase().indexOf(filter) > -1) ? "" : "none";
             });
         });
     }
 
-    // Jalankan filter untuk Genre dan Aktor
+    // Filter untuk Checkbox (Entry Media Baru)
     setupFilter('searchCheckboxGenre', 'genreCheckboxList', 'genre-item');
     setupFilter('searchCheckboxActor', 'actorCheckboxList', 'actor-item');
+
+    // Filter untuk Kelola (Hapus)
+    setupFilter('searchGenreList', 'genreManagementList', 'genre-item-row');
+    setupFilter('searchActorList', 'actorManagementList', 'actor-item-row');
+    setupFilter('searchCharacterList', 'characterManagementList', 'character-item-row');
 });
 </script>
 </body>
