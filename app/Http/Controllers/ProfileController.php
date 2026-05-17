@@ -54,7 +54,7 @@ class ProfileController extends Controller
         // 3. PLAYLIST: Ambil playlist asli buatan user
         $playlists = DB::table('playlists')
             ->where('user_id', $userId)
-            ->orderBy('waktu_dibuat', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('profile.index', compact('user', 'totalReviews', 'watchlists', 'playlists', 'watchTime', 'favoriteGenre'));
