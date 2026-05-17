@@ -1,39 +1,64 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card bg-dark border-secondary">
-            <div class="card-body p-4">
-                <h3 class="text-center mb-4 text-warning">Login</h3>
-                
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+@push('styles')
+<style>
+.auth-wrap { display: flex; justify-content: center; padding: 20px 0 60px; }
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+.auth-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 8px;
+}
+.auth-tagline { text-align: center; font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+.auth-title { font-size: 22px; font-weight: 600; color: var(--text-primary); margin-bottom: 24px; }
+.auth-footer { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-muted); }
+.auth-footer a { color: var(--gold); text-decoration: none; font-weight: 500; }
+.auth-footer a:hover { text-decoration: underline; }
+</style>
+@endpush
 
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control bg-secondary text-light border-0" id="email" name="email" value="{{ old('email') }}" required autofocus>
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control bg-secondary text-light border-0" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-warning w-100 fw-bold">Login</button>
-                </form>
-                
-                <div class="text-center mt-3">
-                    <small>Belum punya akun? <a href="{{ route('register') }}" class="text-warning">Daftar di sini</a></small>
-                </div>
+@section('content')
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="auth-logo">VELLORA</div>
+        <p class="auth-tagline">Katalog Film & Series</p>
+
+        <h2 class="auth-title">Masuk ke Akun</h2>
+
+        @if ($errors->any())
+            <div class="v-alert v-alert-danger">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
             </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="v-form-group">
+                <label class="v-label">Alamat Email</label>
+                <input type="email" name="email" class="v-input" value="{{ old('email') }}" placeholder="nama@email.com" required autofocus>
+            </div>
+            <div class="v-form-group">
+                <label class="v-label">Password</label>
+                <input type="password" name="password" class="v-input" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-gold" style="width:100%;justify-content:center;font-size:15px;padding:11px;">Masuk</button>
+        </form>
+
+        <div class="auth-footer">
+            Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
         </div>
     </div>
 </div>

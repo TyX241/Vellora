@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -31,7 +32,7 @@ class HomeController extends Controller
     }
 
     // Fungsi Pengambilan Kriteria Halaman Browse All
-    public function browse($type)
+    public function browse(Request $request, $type)
     {
         $query = Media::query();
         $title = '';
@@ -57,23 +58,62 @@ class HomeController extends Controller
                 abort(404);
         }
 
-        $results = $query->get();
+        // Filter opsional
+        $filterKategori = $request->input('kategori');
+        $filterGenre    = $request->input('genre');
+        $filterAnimasi  = $request->input('animasi');
 
-        return view('browse', compact('results', 'title', 'type'));
+        if ($filterKategori) {
+            $query->where('format_tayangan', $filterKategori);
+        }
+        if ($filterGenre) {
+            $query->whereHas('genres', function ($q) use ($filterGenre) {
+                $q->where('genres.genre_id', $filterGenre);
+            });
+        }
+        if ($filterAnimasi !== null && $filterAnimasi !== '') {
+            $query->where('is_animation', (bool) $filterAnimasi);
+        }
+
+        $results = $query->get();
+        $genres  = Genre::orderBy('nama_genre')->get();
+
+        return view('browse', compact('results', 'title', 'type', 'genres', 'filterKategori', 'filterGenre', 'filterAnimasi'));
     }
 
     public function search(Request $request)
     {
-        $query = $request->input('q');
-        $results = collect(); // Koleksi kosong sebagai default jika tidak ada pencarian
+        $query          = $request->input('q');
+        $filterKategori = $request->input('kategori');
+        $filterGenre    = $request->input('genre');
+        $filterStatus   = $request->input('status');
+
+        $mediaQuery = Media::query();
 
         if ($query) {
-            // Mencari media yang judulnya mengandung kata kunci pencarian
-            $results = Media::where('judul', 'like', '%' . $query . '%')
-                            ->latest()
-                            ->get();
+            $mediaQuery->where('judul', 'like', '%' . $query . '%');
+        }
+        if ($filterKategori) {
+            $mediaQuery->where('format_tayangan', $filterKategori);
+        }
+        if ($filterGenre) {
+            $mediaQuery->whereHas('genres', function ($q) use ($filterGenre) {
+                $q->where('genres.genre_id', $filterGenre);
+            });
+        }
+        if ($filterStatus) {
+            $mediaQuery->where('status_tayang', $filterStatus);
         }
 
-        return view('search', compact('results', 'query'));
+        // Hanya tampilkan hasil kalau ada input apapun
+        if ($query || $filterKategori || $filterGenre || $filterStatus) {
+            $results = $mediaQuery->latest()->get();
+        } else {
+            $results = collect();
+        }
+
+        $genres = Genre::orderBy('nama_genre')->get();
+
+        return view('search', compact('results', 'query', 'filterKategori', 'filterGenre', 'filterStatus', 'genres'));
     }
 }

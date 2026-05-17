@@ -9,7 +9,7 @@ class MediaController extends Controller
 {
     public function show($id)
     {
-        $media = \App\Models\Media::with(['genres', 'reviews.user'])->findOrFail($id);
+        $media = \App\Models\Media::with(['genres', 'reviews.user', 'characters.actor'])->findOrFail($id);
         
         $userWatchlist = null;
         $userReview = null;
