@@ -97,6 +97,30 @@
     </div>
 </div>
 
+<h4 class="fw-bold mb-4 border-bottom border-secondary pb-2 text-light">Characters & Voice Actor</h4>
+<div class="row g-3">
+    @forelse($media->characters as $char)
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Kiri: Karakter -->
+                    <div>
+                        <div class="text-light fw-bold">{{ $char->nama_karakter }}</div>
+                        <div class="text-secondary small">{{ $char->peran ?? 'Supporting' }}</div>
+                    </div>
+                    
+                    <!-- Kanan: Aktor -->
+                    <div class="text-end">
+                        <div class="text-light">{{ $char->actor->nama_aktor ?? 'Unknown' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @empty
+        <p class="text-secondary small">Belum ada daftar karakter.</p>
+    @endforelse
+</div>
+
 <div class="row mt-5">
     <div class="col-12">
         <h4 class="fw-bold mb-4 border-bottom border-secondary pb-2 text-light">Ulasan Pengguna</h4>

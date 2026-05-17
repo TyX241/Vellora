@@ -232,6 +232,13 @@
                     <div class="mb-2">
                         <input type="text" name="nama_karakter" class="form-control form-control-sm" placeholder="Nama Karakter..." required>
                     </div>
+                    <!-- TAMBAHKAN INI -->
+                    <div class="mb-2">
+                            <select name="peran" class="form-select form-select-sm" required>
+                            <option value="Utama">Utama</option>
+                            <option value="Pendukung">Pendukung</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">Simpan Karakter</button>
                 </form>
             </div>

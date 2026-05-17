@@ -10,7 +10,7 @@ class MediaController extends Controller
     public function show($id)
     {
         // Load relasi genres dan reviews (beserta data user pembuat review)
-        $media = \App\Models\Media::with(['genres', 'reviews.user'])->findOrFail($id);
+        $media = \App\Models\Media::with(['genres', 'actors', 'characters.actor', 'reviews.user'])->findOrFail($id);
         
         $userWatchlist = null;
         $userReview = null; // Menyimpan data ulasan user saat ini (jika ada)

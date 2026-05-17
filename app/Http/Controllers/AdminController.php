@@ -153,7 +153,8 @@ class AdminController extends Controller
         $request->validate([
             'media_id' => 'required',
             'actor_id' => 'required',
-            'nama_karakter' => 'required|string|max:255'
+            'nama_karakter' => 'required|string|max:255',
+            'peran' => 'required|in:Utama,Pendukung' // Validasi tambahan
         ]);
 
         // 2. Simpan ke database
@@ -161,6 +162,7 @@ class AdminController extends Controller
             'media_id' => $request->media_id,
             'actor_id' => $request->actor_id,
             'nama_karakter' => $request->nama_karakter,
+            'peran' => $request->peran, // Simpan data peran
         ]);
 
         // 3. Kembali ke halaman sebelumnya
