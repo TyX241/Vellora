@@ -7,7 +7,7 @@
             <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/300x450/333333/FFFFFF?text=No+Poster' }}" 
                  alt="{{ $media->judul }}" 
                  class="img-fluid rounded shadow-lg w-100" 
-                 style="object-fit: cover;">
+                 style="height: 380px; object-fit: cover; background-color: #1a1a1a;">
             
             <span class="badge {{ $media->status_tayang == 'Ongoing' ? 'bg-success' : 'bg-secondary' }} position-absolute top-0 start-0 m-2 px-3 py-2">
                 {{ $media->status_tayang }}
@@ -16,7 +16,8 @@
     </div>
 
     <div class="col-md-8 col-lg-9">
-        <h1 class="fw-bold mb-2 text-light">{{ $media->judul }}</h1>
+        <h1 class="fw-bold mb-1 text-light">{{ $media->judul }}</h1>
+        
         <div class="d-flex align-items-center mb-3">
             <span class="fs-4 text-warning fw-bold me-2">⭐ {{ $averageRating ? number_format($averageRating, 1) : 'N/A' }}</span>
             <span class="text-secondary small">/ 10 ({{ $media->reviews->count() }} Ulasan)</span>
@@ -30,7 +31,7 @@
             <span>⏱️ {{ $media->total_episode ? $media->total_episode . ' Episode' : '1 Episode' }}</span>
             <span>🌍 {{ $media->negara_asal ?? 'Tidak diketahui' }}</span>
             @if($media->is_animation)
-                <span class="badge bg-danger text-light px-2 py-1">Anime / Animasi</span>
+                <span class="badge bg-warning text-dark fw-bold px-2 py-1">Animation</span>
             @endif
         </div>
 
@@ -49,10 +50,13 @@
             {{ $media->deskripsi ?? 'Sinopsis belum tersedia untuk tayangan ini.' }}
         </p>
 
-       <div class="mt-5 pt-4 border-top border-secondary flex-column gap-3">
+        <div class="mt-5 pt-4 border-top border-secondary d-flex flex-column gap-3">
             
             @if(session('success'))
-                <div class="alert alert-success bg-success text-white border-0 py-2 w-100 mb-3">{{ session('success') }}</div>
+                <div class="alert alert-success bg-success text-white border-0 py-2 w-100 mb-0">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger bg-danger text-white border-0 py-2 w-100 mb-0">{{ session('error') }}</div>
             @endif
 
             @auth
@@ -87,38 +91,18 @@
                             </button>
                         </form>
                     @endif
+
+                    <button type="button" class="btn btn-outline-warning fw-bold d-flex align-items-center" style="height: 42px;" data-bs-toggle="modal" data-bs-target="#playlistModal">
+                        + Playlist
+                    </button>
                 </div>
             @else
                 <div class="alert bg-dark border-secondary text-light w-100 mb-0">
-                    <a href="{{ route('login') }}" class="text-warning fw-bold text-decoration-none">Login</a> untuk menambahkan tayangan ini ke Watchlist atau memberikan ulasan Anda.
+                    <a href="{{ route('login') }}" class="text-warning fw-bold text-decoration-none">Login</a> untuk mengakses fitur daftar tontonan, koleksi kustom, atau memberikan ulasan Anda.
                 </div>
             @endauth
         </div>
     </div>
-</div>
-
-<h4 class="fw-bold mb-4 border-bottom border-secondary pb-2 text-light">Characters & Voice Actor</h4>
-<div class="row g-3">
-    @forelse($media->characters as $char)
-        <div class="col-md-6">
-            <div class="card bg-dark border-secondary p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <!-- Kiri: Karakter -->
-                    <div>
-                        <div class="text-light fw-bold">{{ $char->nama_karakter }}</div>
-                        <div class="text-secondary small">{{ $char->peran ?? 'Supporting' }}</div>
-                    </div>
-                    
-                    <!-- Kanan: Aktor -->
-                    <div class="text-end">
-                        <div class="text-light">{{ $char->actor->nama_aktor ?? 'Unknown' }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @empty
-        <p class="text-secondary small">Belum ada daftar karakter.</p>
-    @endforelse
 </div>
 
 <div class="row mt-5">
@@ -147,11 +131,11 @@
 </div>
 
 @auth
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark border-secondary text-light">
             <div class="modal-header border-secondary">
-                <h5 class="modal-title fw-bold text-warning" id="reviewModalLabel">Beri Ulasan: {{ $media->judul }}</h5>
+                <h5 class="modal-title fw-bold text-warning">Beri Ulasan: {{ $media->judul }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('review.store') }}" method="POST">
@@ -160,25 +144,64 @@
                     <input type="hidden" name="media_id" value="{{ $media->media_id }}">
                     
                     <div class="mb-3">
-                        <label class="form-label">Rating (1 - 10)</label>
+                        <label class="form-label small">Rating (1 - 10)</label>
                         <input type="number" name="rating" class="form-control bg-secondary text-light border-0" 
                                min="1" max="10" step="0.1" required 
                                value="{{ $userReview ? $userReview->rating : '' }}">
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Komentar (Opsional)</label>
-                        <textarea name="komentar" rows="4" class="form-control bg-secondary text-light border-0" 
+                        <label class="form-label small">Komentar (Opsional)</label>
+                        <textarea name="komentar" rows="4" class="form-control bg-secondary text-light border-0" style="resize: none;"
                                   placeholder="Bagaimana pendapat Anda tentang tayangan ini?">{{ $userReview ? $userReview->komentar : '' }}</textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-secondary">
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning fw-bold">Simpan Ulasan</button>
+                    <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-warning fw-bold">Simpan Ulasan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="playlistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light">
+            <div class="modal-header border-secondary">
+                <h6 class="modal-title fw-bold text-warning">Tambahkan ke Koleksi Playlist</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('playlists.addMedia') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="media_id" value="{{ $media->media_id }}">
+                    
+                    @if($userPlaylists->isEmpty())
+                        <div class="text-center py-4 align-middle">
+                            <div class="display-6 text-secondary mb-2">📁</div>
+                            <p class="small text-secondary mb-0">Anda belum memiliki playlist kustom.</p>
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Pilih salah satu koleksi playlist Anda:</label>
+                            <select name="playlist_id" class="form-select bg-secondary text-light border-0" required>
+                                <option value="" disabled selected>-- Pilih Playlist --</option>
+                                @foreach($userPlaylists as $p)
+                                    <option value="{{ $p->playlist_id }}">{{ $p->nama_playlist }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-warning fw-bold" {{ $userPlaylists->isEmpty() ? 'disabled' : '' }}>Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 @endauth
+
 @endsection

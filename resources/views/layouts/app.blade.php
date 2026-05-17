@@ -56,6 +56,10 @@
                                 <li>
                                     <a class="dropdown-item text-light" href="{{ route('watchlist.index') }}">My Watchlist</a>
                                 </li>
+
+                                <li>
+                                    <a class="dropdown-item text-light" href="{{ route('playlists.index') }}">My Playlists</a>
+                                </li>
                                 
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 

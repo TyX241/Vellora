@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\ReviewController;  
+use App\Http\Controllers\PlaylistController;
 
 // Halaman Utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -34,6 +35,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/watchlist/{id}', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');
     Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
     Route::delete('/review/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
+
+    Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists.index');
+    Route::post('/playlists', [PlaylistController::class, 'store'])->name('playlists.store');
+    Route::get('/playlists/{id}', [PlaylistController::class, 'show'])->name('playlists.show');
+    Route::delete('/playlists/{id}', [PlaylistController::class, 'destroy'])->name('playlists.destroy');
+
+    Route::post('/playlists/add', [PlaylistController::class, 'addMedia'])->name('playlists.addMedia');
+    Route::delete('/playlists/item/{id}', [PlaylistController::class, 'removeMedia'])->name('playlists.removeMedia');
 });
 
  // Panel Admin Sementara

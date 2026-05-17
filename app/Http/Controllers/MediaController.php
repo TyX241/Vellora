@@ -9,11 +9,11 @@ class MediaController extends Controller
 {
     public function show($id)
     {
-        // Load relasi genres dan reviews (beserta data user pembuat review)
-        $media = \App\Models\Media::with(['genres', 'actors', 'characters.actor', 'reviews.user'])->findOrFail($id);
+        $media = \App\Models\Media::with(['genres', 'reviews.user'])->findOrFail($id);
         
         $userWatchlist = null;
-        $userReview = null; // Menyimpan data ulasan user saat ini (jika ada)
+        $userReview = null;
+        $userPlaylists = collect(); // Menggunakan collection kosong jika user belum login/tamu
         
         if (auth()->check()) {
             $userWatchlist = \App\Models\Watchlist::where('user_id', auth()->id())
@@ -23,11 +23,13 @@ class MediaController extends Controller
             $userReview = \App\Models\Review::where('user_id', auth()->id())
                                 ->where('media_id', $id)
                                 ->first();
+
+            // Ambil data playlist milik user saat ini untuk form pilihan koleksi
+            $userPlaylists = \App\Models\Playlist::where('user_id', auth()->id())->latest()->get();
         }
         
-        // Hitung rata-rata rating
         $averageRating = $media->reviews->avg('rating');
         
-        return view('media.show', compact('media', 'userWatchlist', 'userReview', 'averageRating'));
+        return view('media.show', compact('media', 'userWatchlist', 'userReview', 'averageRating', 'userPlaylists'));
     }
 }
