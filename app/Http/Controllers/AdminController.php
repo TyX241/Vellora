@@ -158,12 +158,14 @@ class AdminController extends Controller
         ]);
 
         // 2. Simpan ke database
-        \App\Models\Character::create([
+        $character = \App\Models\Character::create([
             'media_id' => $request->media_id,
             'actor_id' => $request->actor_id,
             'nama_karakter' => $request->nama_karakter,
             'peran' => $request->peran, // Simpan data peran
         ]);
+        $media = \App\Models\Media::findOrFail($request->media_id);
+        $media->characters()->attach($character->character_id);
 
         // 3. Kembali ke halaman sebelumnya
         return back()->with('success', 'Karakter berhasil ditambahkan!');
