@@ -104,4 +104,22 @@ class PlaylistController extends Controller
 
         return back()->with('success', 'Tayangan berhasil dihapus dari playlist.');
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_playlist' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string'
+        ]);
+
+        // Proteksi agar hanya pemilik playlist yang bisa mengubahnya
+        $playlist = Playlist::where('playlist_id', $id)->where('user_id', auth()->id())->firstOrFail();
+        
+        $playlist->update([
+            'nama_playlist' => $request->nama_playlist,
+            'deskripsi' => $request->deskripsi
+        ]);
+
+        return back()->with('success', 'Playlist berhasil diperbarui!');
+    }
 }

@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/playlists/{id}', [PlaylistController::class, 'destroy'])->name('playlists.destroy');
 
     Route::post('/playlists/add', [PlaylistController::class, 'addMedia'])->name('playlists.addMedia');
+    Route::put('/playlists/{id}', [PlaylistController::class, 'update'])->name('playlists.update');
     Route::delete('/playlists/item/{id}', [PlaylistController::class, 'removeMedia'])->name('playlists.removeMedia');
 });
 

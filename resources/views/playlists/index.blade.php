@@ -54,12 +54,46 @@
                                     <a href="{{ route('playlists.show', $playlist->playlist_id) }}" class="btn btn-sm btn-outline-warning fw-bold px-3 py-2">
                                         Lihat Koleksi
                                     </a>
-                                    <form action="{{ route('playlists.destroy', $playlist->playlist_id) }}" method="POST" class="m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus seluruh playlist ini beserta semua isinya?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold px-3 py-2">Hapus</button>
-                                    </form>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-info fw-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#editPlaylistModal{{ $playlist->playlist_id }}">
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('playlists.destroy', $playlist->playlist_id) }}" method="POST" class="m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus seluruh playlist ini beserta semua isinya?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger fw-bold px-3 py-2">Hapus</button>
+                                        </form>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade text-start" id="editPlaylistModal{{ $playlist->playlist_id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark border-secondary text-light">
+                                <div class="modal-header border-secondary">
+                                    <h6 class="modal-title fw-bold text-warning">Edit Playlist: {{ $playlist->nama_playlist }}</h6>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('playlists.update', $playlist->playlist_id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label small text-secondary">Nama Playlist</label>
+                                            <input type="text" name="nama_playlist" class="form-control bg-secondary text-light border-0" value="{{ $playlist->nama_playlist }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label small text-secondary">Deskripsi (Opsional)</label>
+                                            <textarea name="deskripsi" rows="4" class="form-control bg-secondary text-light border-0" style="resize: none;">{{ $playlist->deskripsi }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-secondary">
+                                        <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-sm btn-info fw-bold text-dark px-4">Simpan Perubahan</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

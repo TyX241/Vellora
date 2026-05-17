@@ -7,9 +7,9 @@
             <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/300x450/333333/FFFFFF?text=No+Poster' }}" 
                  alt="{{ $media->judul }}" 
                  class="img-fluid rounded shadow-lg w-100" 
-                 style="height: 380px; object-fit: cover; background-color: #1a1a1a;">
+                 style="height: auto; max-height: 500px; object-fit: cover; object-position: top; background-color: #1a1a1a;">
             
-            <span class="badge {{ $media->status_tayang == 'Ongoing' ? 'bg-success' : 'bg-secondary' }} position-absolute top-0 start-0 m-2 px-3 py-2">
+            <span class="badge {{ $media->status_tayang == 'Ongoing' ? 'bg-success' : 'bg-secondary' }} position-absolute top-0 start-0 m-2 px-3 py-2 shadow">
                 {{ $media->status_tayang }}
             </span>
         </div>
