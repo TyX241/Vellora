@@ -48,4 +48,17 @@ class WatchlistController extends Controller
 
         return back()->with('success', 'Tayangan dihapus dari Watchlist.');
     }
+
+    // Update status watchlist
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Plan to Watch,Watching,Completed,Dropped',
+        ]);
+
+        $watchlist = Watchlist::where('watchlist_id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $watchlist->update(['status' => $request->status]);
+
+        return back()->with('success', 'Watchlist berhasil diperbarui!');
+    }
 }

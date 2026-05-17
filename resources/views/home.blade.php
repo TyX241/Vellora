@@ -1,186 +1,187 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+.hero {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 420px;
+    margin-bottom: 56px;
+    display: flex;
+    align-items: flex-end;
+    background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1400&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center 40%;
+}
+.hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(11,11,15,0.92) 0%, rgba(11,11,15,0.4) 60%, rgba(11,11,15,0.2) 100%);
+}
+.hero-content {
+    position: relative; z-index: 1; padding: 40px;
+}
+.hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold-dim); border: 1px solid var(--border-gold);
+    border-radius: 50px; padding: 4px 14px;
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;
+}
+.hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 60px);
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    line-height: 1.05;
+    margin-bottom: 12px;
+    max-width: 580px;
+}
+.hero-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 440px;
+    margin-bottom: 24px;
+    font-weight: 300;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-stat {
+    text-align: right; position: absolute; right: 40px; bottom: 40px; z-index: 1;
+    display: flex; gap: 24px;
+}
+.stat-item { text-align: center; }
+.stat-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 32px;
+    color: var(--gold); letter-spacing: 1px; line-height: 1;
+}
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+.home-section { margin-bottom: 48px; }
+</style>
+@endpush
+
 @section('content')
 
-<style>
-    /* CSS untuk Horizontal Scroll bergaya Netflix */
-    .netflix-row {
-        display: flex;
-        overflow-x: auto;
-        gap: 15px;
-        padding-bottom: 15px;
-        scroll-behavior: smooth;
-    }
-    
-    .netflix-row::-webkit-scrollbar {
-        display: none;
-    }
-    .netflix-row {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .media-card {
-        flex: 0 0 auto;
-        width: 160px;
-        text-decoration: none;
-        color: inherit;
-        position: relative;
-    }
-
-    .poster-wrapper {
-        width: 100%;
-        height: 240px;
-        border-radius: 8px;
-        overflow: hidden; 
-        background-color: #1a1a1a; /* Tambahkan background gelap agar jika gambar kurang tinggi, tidak terlihat bolong */
-        display: flex; /* Membantu menengahkan gambar */
-        align-items: center; 
-        justify-content: center;
-        margin-bottom: 8px;
-    }
-
-    .media-poster {
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* UBAH dari cover menjadi contain */
-    }
-
-    /* .media-card:hover .poster-wrapper {
-        box-shadow: 0 0 20px rgba(255, 193, 7, 0.7); 
-    } */
-
-    .media-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        transition: color 0.3s ease; 
-    }
-
-    .media-card:hover .media-title {
-        color: #ffc107; 
-    }
-
-    /* CSS untuk Hero Section / Jumbotron */
-    .hero-section {
-        position: relative;
-        height: 400px; /* Tinggi banner */
-        border-radius: 12px;
-        overflow: hidden;
-        margin-bottom: 40px;
-        display: flex;
-        align-items: center;
-        background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1000&auto=format&fit=crop'); /* Gambar bioskop/sinema gelap */
-        background-size: cover;
-        background-position: center;
-    }
-
-    /* Overlay gelap agar teks terbaca */
-    .hero-overlay {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(to right, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.4) 100%);
-        z-index: 1;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        padding: 40px;
-        max-width: 600px;
-    }
-</style>
-
-<div class="hero-section mt-2 shadow-lg">
-    <div class="hero-overlay"></div>
+<!-- HERO -->
+<div class="hero">
     <div class="hero-content">
-        <h1 class="display-5 fw-bold text-light">Jelajahi Dunia Sinema Tanpa Batas</h1>
-        <p class="lead text-light mt-3">Lacak, catat, dan ulas semua film, series, hingga anime favoritmu dalam satu tempat.</p>
-        
-        @guest
-            <a href="{{ route('register') }}" class="btn btn-warning btn-lg px-4 fw-bold mt-2">Daftar Sekarang</a>
-        @endguest
-        @auth
-            <a href="#explore" class="btn btn-warning btn-lg px-4 fw-bold mt-2">Mulai Eksplorasi</a>
-        @endauth
+        <div class="hero-eyebrow">
+            <span>✦</span> Platform Katalog Sinema
+        </div>
+        <h1 class="hero-title">Jelajahi Dunia<br>Sinema Tanpa Batas</h1>
+        <p class="hero-subtitle">Lacak, catat, dan ulas semua film, series, hingga anime favoritmu dalam satu platform yang elegan.</p>
+        <div class="hero-actions">
+            @guest
+                <a href="{{ route('register') }}" class="btn-gold" style="font-size:14px;padding:10px 24px;">Mulai Sekarang</a>
+                <a href="{{ route('browse','top-rated') }}" class="btn-ghost" style="font-size:14px;padding:10px 24px;">Jelajahi Koleksi</a>
+            @endguest
+            @auth
+                <a href="{{ route('browse','hot') }}" class="btn-gold" style="font-size:14px;padding:10px 24px;">Mulai Eksplorasi</a>
+                <a href="{{ route('watchlist.index') }}" class="btn-ghost" style="font-size:14px;padding:10px 24px;">Watchlist Saya</a>
+            @endauth
+        </div>
+    </div>
+    <div class="hero-stat d-none d-md-flex">
+        <div class="stat-item">
+            <div class="stat-num">Film</div>
+            <div class="stat-label">& Series</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">Anime</div>
+            <div class="stat-label">& Kartun</div>
+        </div>
     </div>
 </div>
 
-<div id="explore" class="mt-4">
-    
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold mb-0">🔥 Sedang Hangat (Hot)</h5>
-        <a href="{{ route('browse', 'hot') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+<!-- SECTIONS -->
+<div class="home-section">
+    <div class="section-header">
+        <div class="section-title"><span class="dot"></span>Sedang Hangat</div>
+        <a href="{{ route('browse','hot') }}" class="section-link">Lihat Semua →</a>
     </div>
-    <div class="netflix-row mb-4">
+    <div class="media-row">
         @forelse($hotMedia as $media)
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                <div class="poster-wrap">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
+                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
                 </div>
-                <div class="media-title">{{ $media->judul }}</div>
+                <div class="media-card-title">{{ $media->judul }}</div>
+                <div class="media-card-meta">{{ $media->format_tayangan }}</div>
             </a>
         @empty
-            <p class="text-secondary small ps-2">Belum ada data tayangan hangat.</p>
+            <p style="color:var(--text-muted);font-size:14px;">Belum ada data.</p>
         @endforelse
     </div>
+</div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h5 class="fw-bold mb-0">⭐ Skor Tertinggi (Top Rated)</h5>
-        <a href="{{ route('browse', 'top-rated') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+<div class="home-section">
+    <div class="section-header">
+        <div class="section-title"><span class="dot"></span>Skor Tertinggi</div>
+        <a href="{{ route('browse','top-rated') }}" class="section-link">Lihat Semua →</a>
     </div>
-    <div class="netflix-row mb-4">
+    <div class="media-row">
         @forelse($topRatedMedia as $media)
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                <div class="poster-wrap">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
+                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
                 </div>
-                <div class="media-title">{{ $media->judul }}</div>
+                <div class="media-card-title">{{ $media->judul }}</div>
                 @if($media->reviews_avg_rating)
-                    <small class="text-warning d-block mt-1">⭐ {{ number_format($media->reviews_avg_rating, 1) }}</small>
+                    <div class="rating-pill">★ {{ number_format($media->reviews_avg_rating,1) }}</div>
+                @else
+                    <div class="media-card-meta">{{ $media->format_tayangan }}</div>
                 @endif
             </a>
         @empty
-            <p class="text-secondary small ps-2">Belum ada data ulasan rating.</p>
+            <p style="color:var(--text-muted);font-size:14px;">Belum ada data ulasan.</p>
         @endforelse
     </div>
+</div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h5 class="fw-bold mb-0">📈 Paling Populer (Trending)</h5>
-        <a href="{{ route('browse', 'populer') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+<div class="home-section">
+    <div class="section-header">
+        <div class="section-title"><span class="dot"></span>Paling Populer</div>
+        <a href="{{ route('browse','populer') }}" class="section-link">Lihat Semua →</a>
     </div>
-    <div class="netflix-row mb-4">
+    <div class="media-row">
         @forelse($populerMedia as $media)
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                <div class="poster-wrap">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
+                    <span class="poster-badge {{ $media->status_tayang == 'Ongoing' ? 'ongoing' : 'finished' }}">{{ $media->status_tayang }}</span>
                 </div>
-                <div class="media-title">{{ $media->judul }}</div>
+                <div class="media-card-title">{{ $media->judul }}</div>
+                <div class="media-card-meta">{{ $media->format_tayangan }}</div>
             </a>
         @empty
-            <p class="text-secondary small ps-2">Belum ada data popularitas tayangan.</p>
+            <p style="color:var(--text-muted);font-size:14px;">Belum ada data popularitas.</p>
         @endforelse
     </div>
+</div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h5 class="fw-bold mb-0">📺 Sedang Tayang (Ongoing)</h5>
-        <a href="{{ route('browse', 'ongoing') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+<div class="home-section">
+    <div class="section-header">
+        <div class="section-title"><span class="dot"></span>Sedang Tayang</div>
+        <a href="{{ route('browse','ongoing') }}" class="section-link">Lihat Semua →</a>
     </div>
-    <div class="netflix-row mb-5">
+    <div class="media-row">
         @forelse($ongoingMedia as $media)
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                <div class="poster-wrap">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/1A1A24/4A4860?text=No+Poster' }}" alt="{{ $media->judul }}" loading="lazy">
+                    <span class="poster-badge ongoing">Ongoing</span>
                 </div>
-                <div class="media-title">{{ $media->judul }}</div>
+                <div class="media-card-title">{{ $media->judul }}</div>
+                <div class="media-card-meta">{{ $media->format_tayangan }}</div>
             </a>
         @empty
-            <p class="text-secondary small ps-2">Belum ada data tayangan aktif mingguan.</p>
+            <p style="color:var(--text-muted);font-size:14px;">Belum ada tayangan aktif.</p>
         @endforelse
     </div>
-
 </div>
+
 @endsection

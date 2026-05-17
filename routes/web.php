@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // ------------------------------------
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/watchlist', [WatchlistController::class, 'store'])->name('watchlist.store');
+    Route::put('/watchlist/{id}', [WatchlistController::class, 'update'])->name('watchlist.update');
     Route::delete('/watchlist/{id}', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');
     Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
     Route::delete('/review/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
