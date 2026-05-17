@@ -113,25 +113,63 @@
     
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">🔥 Sedang Hangat (Hot)</h5>
-        <a href="#" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+        <a href="{{ route('browse', 'hot') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
     </div>
     <div class="netflix-row mb-4">
-        @forelse($hotMedia as $media) <a href="/tayangan/{{ $media->media_id }}" class="media-card">
+        @forelse($hotMedia as $media)
+            <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrapper">
                     <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
                 </div>
                 <div class="media-title">{{ $media->judul }}</div>
             </a>
         @empty
-            <p class="text-secondary">Belum ada data tayangan.</p>
+            <p class="text-secondary small ps-2">Belum ada data tayangan hangat.</p>
+        @endforelse
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+        <h5 class="fw-bold mb-0">⭐ Skor Tertinggi (Top Rated)</h5>
+        <a href="{{ route('browse', 'top-rated') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+    </div>
+    <div class="netflix-row mb-4">
+        @forelse($topRatedMedia as $media)
+            <a href="/tayangan/{{ $media->media_id }}" class="media-card">
+                <div class="poster-wrapper">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                </div>
+                <div class="media-title">{{ $media->judul }}</div>
+                @if($media->reviews_avg_rating)
+                    <small class="text-warning d-block mt-1">⭐ {{ number_format($media->reviews_avg_rating, 1) }}</small>
+                @endif
+            </a>
+        @empty
+            <p class="text-secondary small ps-2">Belum ada data ulasan rating.</p>
+        @endforelse
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+        <h5 class="fw-bold mb-0">📈 Paling Populer (Trending)</h5>
+        <a href="{{ route('browse', 'populer') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+    </div>
+    <div class="netflix-row mb-4">
+        @forelse($populerMedia as $media)
+            <a href="/tayangan/{{ $media->media_id }}" class="media-card">
+                <div class="poster-wrapper">
+                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
+                </div>
+                <div class="media-title">{{ $media->judul }}</div>
+            </a>
+        @empty
+            <p class="text-secondary small ps-2">Belum ada data popularitas tayangan.</p>
         @endforelse
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
         <h5 class="fw-bold mb-0">📺 Sedang Tayang (Ongoing)</h5>
-        <a href="#" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
+        <a href="{{ route('browse', 'ongoing') }}" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
     </div>
-    <div class="netflix-row mb-4">
+    <div class="netflix-row mb-5">
         @forelse($ongoingMedia as $media)
             <a href="/tayangan/{{ $media->media_id }}" class="media-card">
                 <div class="poster-wrapper">
@@ -140,41 +178,7 @@
                 <div class="media-title">{{ $media->judul }}</div>
             </a>
         @empty
-            <p class="text-secondary">Belum ada data tayangan.</p>
-        @endforelse
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h5 class="fw-bold mb-0">✅ Sudah Selesai (Completed)</h5>
-        <a href="#" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
-    </div>
-    <div class="netflix-row mb-4">
-        @forelse($completedMedia as $media)
-            <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
-                </div>  
-                <div class="media-title">{{ $media->judul }}</div>
-            </a>
-        @empty
-            <p class="text-secondary">Belum ada data tayangan.</p>
-        @endforelse
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h5 class="fw-bold mb-0">⭐ Rekomendasi Spesial (Top Rated)</h5>
-        <a href="#" class="text-warning text-decoration-none small fw-bold">Browse all ></a>
-    </div>
-    <div class="netflix-row mb-5">
-        @forelse($topRatedMedia as $media)
-            <a href="/tayangan/{{ $media->media_id }}" class="media-card">
-                <div class="poster-wrapper">
-                    <img src="{{ $media->poster_url ?? 'https://via.placeholder.com/160x240/333333/FFFFFF?text=No+Poster' }}" class="media-poster" alt="{{ $media->judul }}">
-                </div>      
-                <div class="media-title">{{ $media->judul }}</div>
-            </a>
-        @empty
-            <p class="text-secondary">Belum ada data tayangan.</p>
+            <p class="text-secondary small ps-2">Belum ada data tayangan aktif mingguan.</p>
         @endforelse
     </div>
 
