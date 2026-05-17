@@ -90,13 +90,17 @@
                     <form action="{{ route('admin.media.store') }}" method="POST">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <label class="small">Judul Tayangan</label>
                                 <input type="text" name="judul" class="form-control form-control-sm" required>
                             </div>
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <label class="small">URL Poster</label>
                                 <input type="url" name="poster_url" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label class="small">Durasi (Menit/Ep)</label>
+                                <input type="number" name="durasi_per_episode" class="form-control form-control-sm" placeholder="Contoh: 24">
                             </div>
                             <div class="col-md-4 mb-2">
                                 <label class="small">Format</label>
@@ -115,6 +119,23 @@
                             <div class="col-md-4 mb-2">
                                 <label class="small">Negara</label>
                                 <input type="text" name="negara_asal" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small">Total Episode</label>
+                                <input type="number" name="total_episode" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small">Tanggal Rilis</label>
+                                <input type="date" name="tanggal_rilis" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small">Animasi?</label>
+                                <select name="is_animation" class="form-select form-select-sm">
+                                    <option value="0">Tidak</option>
+                                    <option value="1">Ya</option>
+                                </select>
                             </div>
                         </div>
                         <div class="mb-2">

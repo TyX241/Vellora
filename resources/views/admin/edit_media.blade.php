@@ -24,13 +24,17 @@
             <form action="{{ route('admin.media.update', $media->media_id) }}" method="POST">
                 @csrf
                 @method('PUT') <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label small">Judul Tayangan</label>
                         <input type="text" name="judul" class="form-control form-control-sm" value="{{ $media->judul }}" required>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label small">URL Poster</label>
                         <input type="url" name="poster_url" class="form-control form-control-sm" value="{{ $media->poster_url }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small">Durasi (menit/ep)</label>
+                        <input type="number" name="durasi_per_episode" class="form-control form-control-sm" value="{{ $media->durasi_per_episode }}">
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label small">Format</label>

@@ -10,7 +10,7 @@ class Media extends Model
 
     protected $fillable = [
         'judul', 'format_tayangan', 'negara_asal', 'is_animation', 
-        'deskripsi', 'poster_url', 'tanggal_rilis', 'status_tayang', 'total_episode'
+        'deskripsi', 'poster_url', 'tanggal_rilis', 'status_tayang', 'total_episode', 'durasi_per_episode'
     ];
 
     public function genres() { 

@@ -22,13 +22,15 @@
                 <h3 style="color: #aaa; margin: 0; font-size: 16px;">Total Ulasan</h3>
                 <p style="color: #fff; font-size: 28px; font-weight: bold; margin: 10px 0 0 0;">{{ $totalReviews }} <span style="font-size: 14px; font-weight: normal;">Judul</span></p>
             </div>
+            
             <div style="background-color: #1e1e1e; padding: 20px; border-radius: 8px; text-align: center;">
                 <h3 style="color: #aaa; margin: 0; font-size: 16px;">Waktu Menonton</h3>
-                <p style="color: #fff; font-size: 20px; font-weight: bold; margin: 10px 0 0 0; color: #888;">Belum Tersedia</p>
+                <p style="color: #fff; font-size: 20px; font-weight: bold; margin: 10px 0 0 0; color: #ffc107;">{{ $watchTime }}</p>
             </div>
+            
             <div style="background-color: #1e1e1e; padding: 20px; border-radius: 8px; text-align: center;">
                 <h3 style="color: #aaa; margin: 0; font-size: 16px;">Genre Favorit</h3>
-                <p style="color: #fff; font-size: 20px; font-weight: bold; margin: 10px 0 0 0; color: #888;">Belum Tersedia</p>
+                <p style="color: #fff; font-size: 20px; font-weight: bold; margin: 10px 0 0 0; color: #ffc107;">{{ $favoriteGenre }}</p>
             </div>
         </div>
 

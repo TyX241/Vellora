@@ -69,6 +69,7 @@ class AdminController extends Controller
         // Validasi input dasar
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
+            'durasi_per_episode' => 'nullable|integer',
             'format_tayangan' => 'required|in:Film,Series',
             'status_tayang' => 'required|in:Ongoing,Completed',
             'poster_url' => 'nullable|url',
