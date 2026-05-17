@@ -26,6 +26,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     // Nantinya route profile bisa ditaruh di sini
+    // --- TAMBAH ROUTE PROFILE DI SINI ---
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    // ------------------------------------
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/watchlist', [WatchlistController::class, 'store'])->name('watchlist.store');
     Route::delete('/watchlist/{id}', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');

@@ -50,7 +50,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary shadow" aria-labelledby="navbarDropdown">
                                 <li>
-                                    <a class="dropdown-item text-light" href="#">Profile</a>
+                                    <a class="dropdown-item text-light" href="{{ route('profile.index') }}">Profile</a>
                                 </li>
                                 
                                 <li>
