@@ -149,15 +149,24 @@
                 {{ \Carbon\Carbon::parse($media->tanggal_rilis)->format('Y') }}
             </div>
             @endif
+            @if($media->format_tayangan === 'Series')
             <div class="meta-item">
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                {{ $media->total_episode ? $media->total_episode . ' Episode' : '1 Episode' }}
+                {{ $media->total_episode ? $media->total_episode . ' Episode' : 'Episode TBA' }}
             </div>
             @if($media->durasi_per_episode)
             <div class="meta-item">
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 {{ $media->durasi_per_episode }} menit/ep
             </div>
+            @endif
+            @else
+            @if($media->durasi_per_episode)
+            <div class="meta-item">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{ $media->durasi_per_episode }} menit
+            </div>
+            @endif
             @endif
             @if($media->negara_asal)
             <div class="meta-item">
@@ -198,6 +207,29 @@
                         <option value="Completed" {{ ($userWatchlist && $userWatchlist->status == 'Completed') ? 'selected' : '' }}>Completed</option>
                         <option value="Dropped" {{ ($userWatchlist && $userWatchlist->status == 'Dropped') ? 'selected' : '' }}>Dropped</option>
                     </select>
+                    @if($media->format_tayangan === 'Series')
+                    <input type="number" name="progres_episode" class="select-v" min="0" placeholder="Episode"
+                           style="width:90px;"
+                           value="{{ $userWatchlist->progres_episode ?? '' }}">
+                    @endif
+                    @php
+                        $wParts = ($userWatchlist && $userWatchlist->progres_waktu)
+                            ? array_map('intval', explode(':', $userWatchlist->progres_waktu))
+                            : [null, null, null];
+                    @endphp
+                    <div style="display:flex;gap:4px;align-items:center;">
+                        <input type="number" name="waktu_jam" class="select-v" min="0" max="99" placeholder="JJ"
+                               style="width:58px;text-align:center;"
+                               value="{{ $wParts[0] !== null && ($wParts[0] > 0 || $wParts[1] > 0 || $wParts[2] > 0) ? $wParts[0] : '' }}">
+                        <span style="color:var(--text-muted);font-size:13px;font-weight:500;">:</span>
+                        <input type="number" name="waktu_menit" class="select-v" min="0" max="59" placeholder="MM"
+                               style="width:58px;text-align:center;"
+                               value="{{ $wParts[1] !== null && ($wParts[0] > 0 || $wParts[1] > 0 || $wParts[2] > 0) ? $wParts[1] : '' }}">
+                        <span style="color:var(--text-muted);font-size:13px;font-weight:500;">:</span>
+                        <input type="number" name="waktu_detik" class="select-v" min="0" max="59" placeholder="DD"
+                               style="width:58px;text-align:center;"
+                               value="{{ $wParts[2] !== null && ($wParts[0] > 0 || $wParts[1] > 0 || $wParts[2] > 0) ? $wParts[2] : '' }}">
+                    </div>
                     <button type="submit" class="btn-gold" style="font-size:14px;padding:9px 20px;">
                         {{ $userWatchlist ? 'Update Watchlist' : '+ Watchlist' }}
                     </button>

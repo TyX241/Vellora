@@ -71,6 +71,8 @@
                 <th>Judul</th>
                 <th class="col-hide">Format</th>
                 <th>Status</th>
+                <th class="col-hide">Ep.</th>
+                <th class="col-hide">Waktu</th>
                 <th class="col-hide">Diubah</th>
                 <th>Aksi</th>
             </tr>
@@ -98,6 +100,12 @@
                         <span class="status-badge {{ $sc }}">{{ $item->status }}</span>
                     </td>
                     <td class="wl-time col-hide">
+                        {{ $item->media->format_tayangan === 'Series' && $item->progres_episode !== null ? 'Ep. '.$item->progres_episode : '—' }}
+                    </td>
+                    <td class="wl-time col-hide">
+                        {{ $item->progres_waktu ?? '—' }}
+                    </td>
+                    <td class="wl-time col-hide">
                         {{ \Carbon\Carbon::parse($item->waktu_diubah)->diffForHumans() }}
                     </td>
                     <td>
@@ -114,7 +122,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">
+                    <td colspan="8">
                         <div class="empty-state">
                             <div class="empty-state-icon">📺</div>
                             <p style="font-size:16px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;">Watchlist masih kosong</p>
@@ -148,6 +156,39 @@
                             <option value="Completed" {{ $item->status == 'Completed' ? 'selected' : '' }}>Completed</option>
                             <option value="Dropped" {{ $item->status == 'Dropped' ? 'selected' : '' }}>Dropped</option>
                         </select>
+                    </div>
+                    @if($item->media->format_tayangan === 'Series')
+                    <div class="v-form-group">
+                        <label class="v-label">Progres Episode</label>
+                        <input type="number" name="progres_episode" class="v-input" min="0" placeholder="Nomor episode"
+                               value="{{ $item->progres_episode ?? '' }}">
+                    </div>
+                    @endif
+                    <div class="v-form-group">
+                        <label class="v-label">Progres Waktu</label>
+                        @php
+                            $hasWaktu = $item->progres_waktu && $item->progres_waktu !== '00:00:00';
+                            $ep = $hasWaktu
+                                ? array_map('intval', explode(':', $item->progres_waktu))
+                                : [null, null, null];
+                        @endphp
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                            <div>
+                                <input type="number" name="waktu_jam" class="v-input" min="0" max="99"
+                                       placeholder="Jam" value="{{ $hasWaktu ? $ep[0] : '' }}" style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:3px;">Jam</div>
+                            </div>
+                            <div>
+                                <input type="number" name="waktu_menit" class="v-input" min="0" max="59"
+                                       placeholder="Menit" value="{{ $hasWaktu ? $ep[1] : '' }}" style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:3px;">Menit</div>
+                            </div>
+                            <div>
+                                <input type="number" name="waktu_detik" class="v-input" min="0" max="59"
+                                       placeholder="Detik" value="{{ $hasWaktu ? $ep[2] : '' }}" style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:3px;">Detik</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
